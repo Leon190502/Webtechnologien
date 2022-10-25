@@ -1,0 +1,9 @@
+browser-server HTTP POST httpsstudies.cs.helsinki.fiexampleappnew_note_spa
+server--browser {messagenote created}
+
+
+note over browser
+browser starts executing js-code
+that writes the additional note in the html.
+No redirectreload occurs.
+end note
