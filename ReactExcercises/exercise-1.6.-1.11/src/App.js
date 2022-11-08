@@ -2,15 +2,21 @@ import { useState } from 'react'
 
 
 const Statistics = (props) => {
+  let statVar = ""
+  if(props.sum < 1){
+     statVar = <div><p>Please add Feedback</p></div>
+  }else{
+     statVar = <div>
+    <p>Good {props.good}</p>
+    <p>Neutral {props.neutral}</p>
+    <p>Bad {props.bad}</p>
+    <p>Sum {props.sum}</p>
+    <p>Positive {props.posPer}%</p>
+    <p>Average {props.aver}</p>
+  </div>
+  }
   return(
-    <div>
-      <p>Good {props.good}</p>
-      <p>Neutral {props.neutral}</p>
-      <p>Bad {props.bad}</p>
-      <p>Sum {props.sum}</p>
-      <p>Positive {props.posPer}%</p>
-      <p>Average {props.aver}</p>
-    </div>
+    statVar
    )
 }
 
