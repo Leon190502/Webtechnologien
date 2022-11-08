@@ -23,7 +23,10 @@ const Statistics = (props) => {
 const StatisticsLine = (props) => {
   return(
   <div>
-    <p>{props.text} {props.value}</p>
+    <tr>
+      <td>{props.text}</td>
+      <td>{props.value}</td>
+    </tr>
   </div>
   )
 }
