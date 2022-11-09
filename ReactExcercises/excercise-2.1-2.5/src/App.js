@@ -24,11 +24,24 @@ const Part = ({part}) => {
   )
 }
 
+const Footer = ({total}) => {
+  return(
+    <div>
+      <h3>Total of {total} Exercises</h3>
+    </div>
+  )
+}
+
 const Course = ({course}) => {
+  let total = 0;
+  for(let i = 0, n = course.parts.length; i<n; i++){
+    total = total + course.parts[i].exercises
+  }
   return(
     <div>
       <Header name={course.name}/>
       <Content parts={course.parts}/>
+      <Footer total={total}/>
     </div>
   )
 }
@@ -53,11 +66,20 @@ const App = () => {
         name: 'State of a component',
         exercises: 14,
         id: 3
+      },
+      {
+        name: 'Using props to pass data',
+        exercises: 7,
+        id: 2
+      },
+      {
+        name: 'Using props to pass data',
+        exercises: 7,
+        id: 2
       }
     ]
   }
-
-  return <Course course={course} />
+  return <Course course={course}/>
 }
 
 export default App
