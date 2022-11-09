@@ -24,24 +24,25 @@ const Part = ({part}) => {
   )
 }
 
-const Footer = ({total}) => {
+
+const Footer = ({parts}) => {
+  
+  let total = parts.reduce((total,current)=>total+current.exercises,0);
+
   return(
     <div>
-      <h3>Total of {total} Exercises</h3>
+      <h4>Number of exercises {total}</h4>
     </div>
   )
 }
 
 const Course = ({course}) => {
-  let total = 0;
-  for(let i = 0, n = course.parts.length; i<n; i++){
-    total = total + course.parts[i].exercises
-  }
+
   return(
     <div>
       <Header name={course.name}/>
       <Content parts={course.parts}/>
-      <Footer total={total}/>
+      <Footer parts={course.parts}/>
     </div>
   )
 }
@@ -66,16 +67,6 @@ const App = () => {
         name: 'State of a component',
         exercises: 14,
         id: 3
-      },
-      {
-        name: 'Using props to pass data',
-        exercises: 7,
-        id: 2
-      },
-      {
-        name: 'Using props to pass data',
-        exercises: 7,
-        id: 2
       }
     ]
   }
