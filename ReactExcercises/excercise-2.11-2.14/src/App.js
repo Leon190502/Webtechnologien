@@ -24,33 +24,18 @@ const App = () => {
   ///////////////////////////////Checking Name and Number///////////////////////////////////////////////
   const addData = (event) => {
     event.preventDefault();
-    if (newName === "" || newNumber === "") {
-      if (newName === "" && newNumber === "") {
-        alert(`Add name and number`);
-      } else if (newNumber === "") {
-        alert(`Add number`);
-      } else {
-        alert(`Add name`);
-      }
-    } else if (
-      !JSON.stringify(persons).includes('"name":' + '"' + newName + '"')
-    ) {
-      const personObject = {
-        name: newName,
-        number: newNumber,
-        id: persons.length + 1,
-      };
-      setPersons(persons.concat(personObject));
-      setNewName("");
-      setNewNumber("");
-      console.log(persons);
-    } else if (
-      JSON.stringify(persons).includes('"name":' + '"' + newName + '"')
-    ) {
-      alert(`${newName} is already in the Phonebook`);
-      setNewName("");
-      setNewNumber("");
-    }
+    const personObject = {
+      name: newName,
+      number: newNumber,
+    };
+
+    axios
+      .post("http://localhost:3002/persons", personObject)
+      .then((response) => {
+        setPersons(persons.concat(response.data));
+        setNewName("");
+        setNewNumber("");
+      });
   };
   ////////////////////////////////////////////////////////////////////////////////////
   const handleNameChange = (event) => {
