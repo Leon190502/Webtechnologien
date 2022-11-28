@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
 import Name from "./Components/Person";
+import personService from "./Services/persons";
 
 ////////////////////////////////////////////////////////////////////////////////
 const App = () => {
@@ -14,7 +15,7 @@ const App = () => {
   useEffect(() => {
     console.log("effect");
 
-    axios.get("http://localhost:3002/persons").then((response) => {
+    personService.getAll().then((response) => {
       console.log("promise fulfilled");
       setPersons(response.data);
     });
@@ -29,13 +30,11 @@ const App = () => {
       number: newNumber,
     };
 
-    axios
-      .post("http://localhost:3002/persons", personObject)
-      .then((response) => {
-        setPersons(persons.concat(response.data));
-        setNewName("");
-        setNewNumber("");
-      });
+    personService.create(personObject).then((response) => {
+      setPersons(persons.concat(response.data));
+      setNewName("");
+      setNewNumber("");
+    });
   };
   ////////////////////////////////////////////////////////////////////////////////////
   const handleNameChange = (event) => {
