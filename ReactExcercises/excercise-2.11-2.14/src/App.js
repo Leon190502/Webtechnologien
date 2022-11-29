@@ -1,8 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
-import axios from "axios";
-import Name from "./Components/Person";
+import Name from "./Person";
 import personService from "./Services/persons";
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -11,6 +10,7 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [update, setUpdate] = useState(false);
 
   useEffect(() => {
     console.log("effect");
@@ -36,6 +36,8 @@ const App = () => {
       setNewNumber("");
     });
   };
+
+  const delDat = ({ id }) => {};
   ////////////////////////////////////////////////////////////////////////////////////
   const handleNameChange = (event) => {
     console.log(event.target.value);
@@ -86,7 +88,12 @@ const App = () => {
             }
           })
           .map((person) => (
-            <Name key={person.id} name={person.name} number={person.number} />
+            <Name
+              key={person.id}
+              name={person.name}
+              number={person.number}
+              id={person.id}
+            />
           ))}
       </ul>
     </div>
