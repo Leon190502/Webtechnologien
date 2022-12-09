@@ -24,6 +24,14 @@ let persons = [
     }
 ]
 
+let i = persons.length
+
+app.get("/info", (request, response) => {
+    let date = new Date()
+    let text = '<h1>Phonebook has info for ' +  persons.length + '</h1>' + '<h2>' + date + '</h2>'
+    response.send(text);
+  });
+
 app.get("/api/persons", (request, response) => {
     response.json(persons);
   });
