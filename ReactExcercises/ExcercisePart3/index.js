@@ -39,7 +39,7 @@ app.get("/api/persons", (request, response) => {
     response.json(persons);
   });
 
-  app.get("/api/persons/:id", (request, response) => {
+app.get("/api/persons/:id", (request, response) => {
     const id = Number(request.params.id);
     const person = persons.find((person) => person.id === id);
   
@@ -59,12 +59,35 @@ app.delete("/api/persons/:id", (request, response) => {
 });
 
 app.post("/api/persons", (request, response) => {
-    const person = request.body
-  console.log(request.body)
-  persons = persons.concat(person)
-  response.json(person)
-  });
 
+    person = request.body
+    if (!person.name || !person.number) {
+        return response.status(400).json({ 
+          error: 'Missing name or number'
+        })
+      }
+    const exists = persons.find(p => p.name === person.name)
+    if(exists){
+        return response.status(400).json({ 
+          error: 'Person already exists'
+        })
+      }
+
+    console.log(person)
+    const personToAdd = {
+        id: generateID(),
+        name: person.name,
+        number: person.number
+    }
+    persons = persons.concat(personToAdd)
+    console.log(persons)
+    response.json(personToAdd)
+  })
+
+
+const generateID = () => {
+    return Math.round((Math.random() * 1000) + (Math.random() * 1000))
+}
 const PORT = 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
