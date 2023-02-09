@@ -8,7 +8,7 @@ const App = () => {
 	const [bad, setBad] = useState(0)
 
 	const increment = (state, setState) => () => setState(state + 1)
-
+	const all = good + neutral + bad
 
 
 	return (
@@ -21,6 +21,9 @@ const App = () => {
 			<p>Good {good}</p>
 			<p>Neutral {neutral}</p>
 			<p>Bad {bad}</p>
+			<p>All {all}</p>
+			<p>Average {(good - bad) / all}</p>
+			<p>Positive {good / all * 100} %</p>
 		</div>
 	)
 }
