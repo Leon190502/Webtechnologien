@@ -1,8 +1,10 @@
-const { response } = require('express')
 const express = require('express')
+const cors = require('cors')
 
 const app = express()
 app.use(express.json())
+app.use(cors())
+
 
 let persons = [
 	{
@@ -42,6 +44,7 @@ app.get('/info', (request, response) => {
 		<p>${new Date()}</p>
 	`
 	response.send(responseText)
+
 })
 
 //Get single person
@@ -60,7 +63,7 @@ app.get('/api/persons/:id', (request, response) => {
 //Delete single person
 app.delete('/api/persons/:id', (request, response) => {
 	const id = Number(request.params.id)
-	notes = notes.filter(note => note.id !== id)
+	persons = persons.filter(person => person.id !== id)
 
 	response.status(204).end()
 })
@@ -86,9 +89,9 @@ app.post('/api/persons', (request, response) => {
 		})
 	}
 
-
+	const id = generatedID()
 	const person = {
-		id: generatedID,
+		id: id,
 		name: request.body.name,
 		number: request.body.number
 	}
