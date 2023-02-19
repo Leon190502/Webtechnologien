@@ -3,7 +3,7 @@ const express = require('express')
 
 const app = express()
 
-const persons = [
+let persons = [
 	{
 		"id": 1,
 		"name": "Arto Hellas",
@@ -25,11 +25,14 @@ const persons = [
 		"number": "39-23-6423122"
 	}
 ]
-
+//________________________________Requests___________________________
+//________________________________Getter_____________________________
+//Get all
 app.get('/api/persons', (request, response) => {
 	response.json(persons)
 })
 
+//Get info page
 app.get('/info', (request, response) => {
 	const responseText = `
 		<p>Phonebook has info for ${persons.length} people</p>
@@ -38,6 +41,7 @@ app.get('/info', (request, response) => {
 	response.send(responseText)
 })
 
+//Get single person
 app.get('/api/persons/:id', (request, response) => {
 	const id = Number(request.params.id)
 	const person = persons.find(person => person.id === id)
@@ -49,8 +53,18 @@ app.get('/api/persons/:id', (request, response) => {
 	}
 })
 
-const PORT = 3001
+//______________________________Delete_________________________________
+//Delete single person
+app.delete('/api/persons/:id', (request, response) => {
+	const id = Number(request.params.id)
+	notes = notes.filter(note => note.id !== id)
 
+	response.status(204).end()
+})
+
+
+
+const PORT = 3001
 app.listen(PORT, () => {
 	console.log(`Server started on port ${PORT}`)
 })
