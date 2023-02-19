@@ -67,11 +67,22 @@ app.delete('/api/persons/:id', (request, response) => {
 
 //______________________________Post_____________________________________
 //Post a single person
-app.post('/api/persons', (request, repsonse) => {
+app.post('/api/persons', (request, response) => {
 
-	if (!request.body.name || !request.body.number) {
-		repsonse.status(400).json({
-			error: 'name or number is missing',
+	const foundPerson = persons.find(person => person.name === request.body.name)
+	if (!request.body.name) {
+		response.status(400).json({
+			error: 'name  is missing',
+		})
+	}
+	if (!request.body.number) {
+		response.status(400).json({
+			error: 'number  is missing',
+		})
+	}
+	if (foundPerson) {
+		response.status(400).json({
+			error: 'name musst be unique',
 		})
 	}
 
