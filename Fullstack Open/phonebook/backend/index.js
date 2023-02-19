@@ -2,6 +2,7 @@ const { response } = require('express')
 const express = require('express')
 
 const app = express()
+app.use(express.json())
 
 let persons = [
 	{
@@ -25,6 +26,8 @@ let persons = [
 		"number": "39-23-6423122"
 	}
 ]
+const generatedID = () => Math.floor((Math.random() * 1000000) + 1)
+
 //________________________________Requests___________________________
 //________________________________Getter_____________________________
 //Get all
@@ -60,6 +63,26 @@ app.delete('/api/persons/:id', (request, response) => {
 	notes = notes.filter(note => note.id !== id)
 
 	response.status(204).end()
+})
+
+//______________________________Post_____________________________________
+//Post a single person
+app.post('/api/persons', (request, repsonse) => {
+
+	if (!request.body.name || !request.body.number) {
+		repsonse.status(400).json({
+			error: 'name or number is missing',
+		})
+	}
+
+
+	const person = {
+		id: generatedID,
+		name: request.body.name,
+		number: request.body.number
+	}
+	persons = persons.concat(person)
+	response.json(person)
 })
 
 
