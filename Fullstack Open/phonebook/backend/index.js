@@ -1,5 +1,7 @@
+require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
+const Person = require('./models/person')
 
 const app = express()
 app.use(express.json())
@@ -34,17 +36,17 @@ const generatedID = () => Math.floor((Math.random() * 1000000) + 1)
 //________________________________Getter_____________________________
 //Get all
 app.get('/api/persons', (request, response) => {
-	response.json(persons)
+	Person.find({}).then(persons => {
+		response.json(persons)
+	})
 })
 
 //Get info page
 app.get('/info', (request, response) => {
 	const responseText = `
 		<p>Phonebook has info for ${persons.length} people</p>
-		<p>${new Date()}</p>
-	`
+		<p>${new Date()}</p>`
 	response.send(responseText)
-
 })
 
 //Get single person
@@ -101,7 +103,7 @@ app.post('/api/persons', (request, response) => {
 
 
 
-const PORT = 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
 	console.log(`Server started on port ${PORT}`)
 })

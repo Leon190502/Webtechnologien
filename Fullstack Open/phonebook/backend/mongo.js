@@ -4,6 +4,9 @@ const password = process.argv[2]
 
 const url = `mongodb+srv://leonsas:${password}@fullstackopenphonebook.j6hbkhv.mongodb.net/?retryWrites=true&w=majority`
 
+mongoose.set('strictQuery', false)
+mongoose.connect(url)
+
 const personSchema = new mongoose.Schema({
 	name: String,
 	number: String
