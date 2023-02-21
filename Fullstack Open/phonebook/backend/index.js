@@ -41,25 +41,6 @@ app.get('/api/persons', (request, response) => {
 	})
 })
 
-//Get info page
-app.get('/info', (request, response) => {
-	const responseText = `
-		<p>Phonebook has info for ${persons.length} people</p>
-		<p>${new Date()}</p>`
-	response.send(responseText)
-})
-
-//Get single person
-app.get('/api/persons/:id', (request, response) => {
-	const id = Number(request.params.id)
-	const person = persons.find(person => person.id === id)
-
-	if (person) {
-		response.json(person)
-	} else {
-		response.status(404).end()
-	}
-})
 
 //______________________________Delete_________________________________
 //Delete single person
@@ -73,8 +54,6 @@ app.delete('/api/persons/:id', (request, response) => {
 //______________________________Post_____________________________________
 //Post a single person
 app.post('/api/persons', (request, response) => {
-
-	const foundPerson = persons.find(person => person.name === request.body.name)
 	if (!request.body.name) {
 		response.status(400).json({
 			error: 'name  is missing',
@@ -85,20 +64,17 @@ app.post('/api/persons', (request, response) => {
 			error: 'number  is missing',
 		})
 	}
-	if (foundPerson) {
-		response.status(400).json({
-			error: 'name musst be unique',
-		})
-	}
 
-	const id = generatedID()
-	const person = {
-		id: id,
-		name: request.body.name,
-		number: request.body.number
-	}
-	persons = persons.concat(person)
-	response.json(person)
+	const newName = request.body.name
+	const newNumber = request.body.number
+	const newPerson = new Person({
+		name: newName,
+		number: newNumber
+	})
+
+	newPerson.save().then(persons => {
+		response.json(persons)
+	})
 })
 
 
