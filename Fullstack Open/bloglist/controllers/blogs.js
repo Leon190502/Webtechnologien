@@ -1,41 +1,37 @@
 const express = require("express");
 const { Blog } = require("../models/blogs");
 const { User } = require("../models/user")
+const jwt = require('jsonwebtoken')
 
 const blogsRouter = express.Router();
 
-blogsRouter.get("/", async (request, response) => {
-	const blogs = await Blog.find({}).populate(
-		'user', { 'username': 1, 'name': 1 }
-	)
-	response.json(blogs.map(b => b.toJSON()))
-});
+const verify = (request, response) => {
+	const decodedToken = jwt.verify(request.token, process.env.SECRET)
+	if (!request.token || !decodedToken.id) {
+		response.status(401).json({ error: 'token missing or invalid' })
+	}
+	return decodedToken
+}
 
-blogsRouter.get('/:id', async (request, response) => {
-	await Blog.findById(request.params.id).populate(
+blogsRouter.get('/', async (request, response) => {
+	const decodedToken = verify(request, response)
+	const blogs = await Blog.find({ 'user': decodedToken.id }).populate(
 		'user', { 'username': 1, 'name': 1 }
 	)
-		.then(blog => {
-			if (blog) {
-				response.json(blog)
-			} else {
-				response.status(404).end()
-			}
-		})
+	response.json(blogs)
 })
 
-blogsRouter.post("/", async (request, response) => {
+blogsRouter.post('/', async (request, response) => {
+	const decodedToken = verify(request, response)
+	const user = await User.findById(decodedToken.id)
 	const body = request.body
-	const user = await User.findById(body.userId)
-
-
 
 	const blog = new Blog({
 		"title": body.title,
 		"author": body.author,
 		"url": body.url,
 		"likes": body.likes,
-		"user": user.id
+		"user": user._id
 	})
 
 	const savedBlog = await blog.save()
@@ -43,37 +39,76 @@ blogsRouter.post("/", async (request, response) => {
 	await user.save()
 
 	response.status(201).json(savedBlog)
-});
-
-//Update a blog
-blogsRouter.put('/:id', (request, response) => {
-	const body = request.body
-
-	const blog = {
-		title: body.title,
-		author: body.author,
-		url: body.url,
-		likes: body.likes
-	}
-
-	const updateBlog = Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
-
-	if (!updateBlog) {
-		return response.status(404).send('The block doesnt exist')
-	}
-	response.status(204).send(updateBlog)
 })
 
 
-// Delete a blog post by ID
-blogsRouter.delete('/:id', async (req, res) => {
-	const id = req.params.id;
-	const deletedBlog = await Blog.findByIdAndRemove(id);
-
-	if (!deletedBlog) {
-		return res.status(404).send('The blog with the given ID was not found');
+blogsRouter.get('/:id', async (request, response) => {
+	verify(request, response)
+	const blog = await Blog.findById(request.params.id)
+	if (blog) {
+		response.json(blog.toJSON())
 	}
-	res.status(204).send(deletedBlog);
-});
+
+	response.status(404).end()
+})
+
+blogsRouter.put('/:id', async (request, response) => {
+	verify(request, response)
+
+	if (await Blog.findById(request.params.id)) {
+		const body = request.body
+		const blog = {
+			"title": body.title,
+			"author": body.author,
+			"url": body.url,
+			"likes": body.likes
+		}
+		const updatedBlog = await Blog.findByIdAndUpdate(
+			request.params.id, blog, { new: true }
+		)
+		response.json(updatedBlog.toJSON())
+	}
+
+	response.status(404).end()
+})
+
+blogsRouter.post('/:id/comments', async (request, response) => {
+	verify(request, response)
+
+	const blog = await Blog.findById(request.params.id)
+	if (blog) {
+		const comment = request.body.comment
+		const newBlog = {
+			"title": blog.title,
+			"author": blog.author,
+			"url": blog.url,
+			"likes": blog.likes,
+			"comments": blog.comments.concat(comment)
+		}
+		const updatedBlog = await Blog.findByIdAndUpdate(
+			request.params.id, newBlog, { new: true }
+		)
+		response.json(updatedBlog.toJSON())
+	}
+
+	response.status(404).end()
+})
+
+blogsRouter.delete('/:id', async (request, response) => {
+	verify(request, response)
+	const user = await User.findById(request.params.id)
+	const blog = await Blog.findById(request.params.id)
+
+	if (blog.user.toString() !== user.id.toString()) {
+		return response.status(401).json({ error: 'only the creator can delete blogs' })
+	}
+
+	user.blogs = user.blogs.filter(
+		b => b.toString() !== blog.id.toString()
+	)
+	await blog.remove()
+	await user.save()
+	response.status(204).end()
+})
 
 exports.blogsRouter = blogsRouter;
