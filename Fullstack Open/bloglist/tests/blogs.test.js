@@ -22,6 +22,23 @@ test("blogs have id", async () => {
 		.expect((res) => expect(res.body[0].id).toBeDefined());
 })
 
+test("upload works", async () => {
+	const initialBlogs = await api.get("/api/blogs")
+	const newBlog = {
+		title: "Testing",
+		author: "Leon Sas",
+		url: "www.google.com",
+		likes: 12
+	}
+	await api
+		.post("/api/blogs")
+		.send(newBlog)
+		.expect(201)
+	const updatedBlogs = await api.get("/api/blogs")
+	expect(updatedBlogs.body.length).toBe(initialBlogs.body.length + 1);
+
+})
+
 afterAll(() => {
 	mongoose.connection.close();
 });
