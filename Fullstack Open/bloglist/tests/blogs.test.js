@@ -63,7 +63,6 @@ describe('allgemein', () => {
 	})
 })
 
-
 describe('deleting a blog', () => {
 	test('succeeds with status 204 if id exists', async () => {
 
@@ -121,6 +120,46 @@ describe('uploading a blog', () => {
 			.send(newBlog)
 			.expect(400)
 	})
+})
+
+describe('updating a blog', () => {
+	test('response when blog exists', async () => {
+
+		const blogs = await api.get("/api/blogs")
+		const newIDBlog = blogs.body[0]
+		const likes = newIDBlog.id + 1
+
+		const newBlog = {
+			"title": "Testing",
+			"author": "Leon Sas",
+			"url": "www.google.com",
+			"likes": likes
+		}
+
+		const response = await api.put(`/api/blogs/${newIDBlog.id}`).send(newBlog)
+		expect(204)
+	})
+
+	test('response when blog exists', async () => {
+
+		const blogs = await api.get("/api/blogs")
+		const newIDBlog = blogs.body[0]
+		const likes = newIDBlog.id + 1
+
+		const id = mongoObjectId()
+
+		const newBlog = {
+			"title": "Testing",
+			"author": "Leon Sas",
+			"url": "www.google.com",
+			"likes": likes
+		}
+
+		const response = await api.put(`/api/blogs/${id}`).send(newBlog)
+		expect(404)
+	})
+
+
 })
 
 

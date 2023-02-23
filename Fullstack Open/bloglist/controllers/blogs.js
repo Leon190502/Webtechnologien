@@ -36,6 +36,26 @@ blogsRouter.post("/", (request, response) => {
 });
 
 
+//Update a blog
+blogsRouter.put('/:id', (request, response) => {
+	const body = request.body
+
+	const blog = {
+		title: body.title,
+		author: body.author,
+		url: body.url,
+		likes: body.likes
+	}
+
+	const updateBlog = Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
+
+	if (!updateBlog) {
+		return response.status(404).send('The blod doesnt exist')
+	}
+	response.status(204).send(updateBlog)
+})
+
+
 // Delete a blog post by ID
 blogsRouter.delete('/:id', async (req, res) => {
 	const id = req.params.id;
