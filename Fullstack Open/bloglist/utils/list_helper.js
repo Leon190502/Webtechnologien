@@ -13,6 +13,7 @@ const favoriteBlog = (list) => {
 	});
 };
 
+
 module.exports = {
 	dummy,
 	totalLikes,

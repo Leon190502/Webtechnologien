@@ -33,8 +33,18 @@ blogsRouter.post("/", (request, response) => {
 			response.status(201).json(result);
 		});
 	}
+});
 
 
+// Delete a blog post by ID
+blogsRouter.delete('/:id', async (req, res) => {
+	const id = req.params.id;
+	const deletedBlog = await Blog.findByIdAndRemove(id);
+
+	if (!deletedBlog) {
+		return res.status(404).send('The blog with the given ID was not found');
+	}
+	res.status(204).send(deletedBlog);
 });
 
 exports.blogsRouter = blogsRouter;
