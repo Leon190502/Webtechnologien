@@ -26,9 +26,15 @@ blogsRouter.post("/", (request, response) => {
 		blog.likes = 0
 	}
 
-	blog.save().then((result) => {
-		response.status(201).json(result);
-	});
+	if (!blog.title || !blog.url) {
+		response.status(400).json({ "error": "no url or title" })
+	} else {
+		blog.save().then((result) => {
+			response.status(201).json(result);
+		});
+	}
+
+
 });
 
 exports.blogsRouter = blogsRouter;
