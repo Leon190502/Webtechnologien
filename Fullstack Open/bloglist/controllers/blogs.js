@@ -9,8 +9,22 @@ blogsRouter.get("/", (request, response) => {
 	});
 });
 
+blogsRouter.get('/:id', (request, response) => {
+	Blog.findById(request.params.id)
+		.then(blog => {
+			if (blog) {
+				response.json(blog)
+			} else {
+				response.status(404).end()
+			}
+		})
+})
+
 blogsRouter.post("/", (request, response) => {
-	const blog = new Blog(request.body);
+	let blog = new Blog(request.body);
+	if (!blog.likes) {
+		blog.likes = 0
+	}
 
 	blog.save().then((result) => {
 		response.status(201).json(result);

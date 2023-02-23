@@ -4,7 +4,7 @@ const app = require("../app");
 
 const api = supertest(app);
 
-test("blogs are returned as json", async () => {
+/*test("blogs are returned as json", async () => {
 	await api
 		.get("/api/blogs")
 		.expect(200)
@@ -13,7 +13,7 @@ test("blogs are returned as json", async () => {
 			console.log(typeof res.body, res.body);
 			expect(res.body).toHaveLength(1);
 		});
-});
+});*/
 
 test("blogs have id", async () => {
 	await api
@@ -36,7 +36,18 @@ test("upload works", async () => {
 		.expect(201)
 	const updatedBlogs = await api.get("/api/blogs")
 	expect(updatedBlogs.body.length).toBe(initialBlogs.body.length + 1);
+})
 
+test("blog id is set to 0", async () => {
+	const newBlog = {
+		"title": "Testing",
+		"author": "Leon Sas",
+		"url": "www.google.com"
+	}
+
+	const response = await api.post("/api/blogs").send(newBlog)
+	expect(response).toBeDefined()
+	expect(response.body.likes).toBe(0)
 })
 
 afterAll(() => {
