@@ -15,6 +15,13 @@ test("blogs are returned as json", async () => {
 		});
 });
 
+test("blogs have id", async () => {
+	await api
+		.get("/api/blogs")
+		.expect(200)
+		.expect((res) => expect(res.body[0].id).toBeDefined());
+})
+
 afterAll(() => {
 	mongoose.connection.close();
 });
